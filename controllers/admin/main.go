@@ -5,7 +5,9 @@ import (
 	"net/http"
 )
 
-type MainController struct{}
+type MainController struct {
+	BaseController
+}
 
 func (mCon MainController) Index(context *gin.Context) {
 	context.HTML(http.StatusOK, "admin/main/index.html", gin.H{

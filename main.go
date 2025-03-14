@@ -19,4 +19,5 @@ func main() {
 	routers.AdminRoutersInit(rMain)
 
 	rMain.Run(":8080")
+	
 }
