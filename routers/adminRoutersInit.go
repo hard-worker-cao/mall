@@ -7,7 +7,7 @@ import (
 )
 
 func AdminRoutersInit(r *gin.Engine) {
-	adminRouters := r.Group("/admin", middlewares.InitMiddleWare)
+	adminRouters := r.Group("/admin", middlewares.InitAdminAuthMiddleware)
 	{
 		//初始页面逻辑,登录页面
 		adminRouters.GET("/", admin.MainController{}.Index)
@@ -15,6 +15,7 @@ func AdminRoutersInit(r *gin.Engine) {
 
 		//登陆页面逻辑
 		adminRouters.GET("/login", admin.LoginController{}.Index)
+		adminRouters.GET("/logOut", admin.LoginController{}.LogOut)
 		adminRouters.POST("/dologin", admin.LoginController{}.Dologin)
 		adminRouters.GET("/captcha", admin.LoginController{}.Captcha)
 		//管理人员界面
