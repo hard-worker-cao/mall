@@ -2,6 +2,7 @@ package models
 
 import (
 	"context"
+	"fmt"
 	"time"
 )
 
@@ -22,28 +23,25 @@ func (r RedisStore) Set(id string, value string) error {
 }
 
 // 获取captcha的信息重写get
-func (r RedisStore) Get(id string, clear bool) (string, error) {
+func (r RedisStore) Get(id string, clear bool) string {
 	key := CAPTCHA + id
-	val, err := RedisDB.Get(ctx, key).Result()
-	if err != nil {
-		ErrHandler(err)
-		return "", err
+	val, err1 := RedisDB.Get(ctx, key).Result()
+	if err1 != nil {
+		fmt.Println(err1)
+		return ""
 	}
 	if clear {
-		err := RedisDB.Del(ctx, key).Err()
-		if err != nil {
-			ErrHandler(err)
-			return "", err
+		err2 := RedisDB.Del(ctx, key).Err()
+		if err2 != nil {
+			fmt.Println(err2)
+			return ""
 		}
 	}
-	return val, nil
+	return val
 }
 
 // 验证cpatcha
-func (r RedisStore) VerifyCaptcha(id, answer string, clear bool) bool {
-	v, err := RedisStore{}.Get(id, clear)
-	if err != nil {
-		ErrHandler(err)
-	}
+func (r RedisStore) Verify(id, answer string, clear bool) bool {
+	v := RedisStore{}.Get(id, clear)
 	return v == answer
 }

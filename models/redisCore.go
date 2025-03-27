@@ -15,11 +15,11 @@ var (
 )
 
 // 配置连接
-func init() {
+func initRedis() {
 	//加载conf文件
-	config, err := ini.Load("conf/redis.ini")
-	if err != nil {
-		ErrHandler(err)
+	config, err1 := ini.Load("conf/app.ini")
+	if err1 != nil {
+		fmt.Println(err1)
 		os.Exit(1)
 	}
 	redisIP := config.Section("redis").Key("ip").String()
@@ -30,10 +30,10 @@ func init() {
 		DB:       0,
 	})
 
-	pong, err := RedisDB.Ping(redisCoretxt).Result()
+	pong, err2 := RedisDB.Ping(redisCoretxt).Result()
 
-	if err != nil {
-		ErrHandler(err)
+	if err2 != nil {
+		fmt.Println(err2)
 	}
 
 	fmt.Println(pong)

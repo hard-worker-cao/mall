@@ -1,22 +1,19 @@
 $(function(){
-    app.init();
+    loginApp.init();
 })
-var app={
+var loginApp={
     init:function(){
         this.getCaptcha()
-        this.captchaImgChange()
+        this.captchaImgChage()
     },
-    //获取验证码逻辑
     getCaptcha:function(){
-        //
         $.get("/admin/captcha?t="+Math.random(),function(response){
             console.log(response)
             $("#captchaId").val(response.captchaId)
             $("#captchaImg").attr("src",response.captchaImage)
         })
     },
-    //点击验证码更换
-    captchaImgChange:function(){
+    captchaImgChage:function(){
         var that=this;
         $("#captchaImg").click(function(){
             that.getCaptcha()

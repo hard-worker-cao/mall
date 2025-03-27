@@ -1,26 +1,23 @@
 package admin
 
 import (
-	"github.com/gin-gonic/gin"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
-type BaseController struct {
-}
+type BaseController struct{}
 
-// 公用成功与失败跳转页面
-func (con *BaseController) success(c *gin.Context, massage string, redirectURL string) {
-	c.String(http.StatusOK, "success")
+func (con BaseController) Success(c *gin.Context, message string, redirectUrl string) {
 	c.HTML(http.StatusOK, "admin/public/success.html", gin.H{
-		"massage":     massage,
-		"redirectURL": redirectURL,
+		"message":     message,
+		"redirectUrl": redirectUrl,
 	})
 }
 
-func (con *BaseController) fail(c *gin.Context, massage string, redirectURL string) {
-	c.String(http.StatusOK, "fail")
-	c.HTML(http.StatusOK, "admin/public/fail.html", gin.H{
-		"massage":     massage,
-		"redirectURL": redirectURL,
+func (con BaseController) Error(c *gin.Context, message string, redirectUrl string) {
+	c.HTML(http.StatusOK, "admin/public/error.html", gin.H{
+		"message":     message,
+		"redirectUrl": redirectUrl,
 	})
 }

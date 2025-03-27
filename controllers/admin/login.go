@@ -3,67 +3,71 @@ package admin
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/gin-contrib/sessions"
-	"github.com/gin-gonic/gin"
 	"mall/models"
 	"net/http"
+
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-gonic/gin"
 )
 
 type LoginController struct {
 	BaseController
 }
 
-func (con *LoginController) Index(c *gin.Context) {
-	c.HTML(http.StatusOK, "admin/login/login.html", gin.H{})
-}
+func (con LoginController) Index(c *gin.Context) {
+	//验证md5是否正确
+	// fmt.Println(models.Md5("123456"))   e10adc3949ba59abbe56e057f20f883e
 
-func (con *LoginController) Dologin(c *gin.Context) {
-	c.String(http.StatusOK, "login")
+	c.HTML(http.StatusOK, "admin/login/login.html", gin.H{})
+
+}
+func (con LoginController) DoLogin(c *gin.Context) {
+
 	captchaId := c.PostForm("captchaId")
 	username := c.PostForm("username")
 	password := c.PostForm("password")
 	verifyValue := c.PostForm("verifyValue")
-
-	fmt.Println(username, password)
-	//1.验证码是否正确
+	//fmt.Println(username, password)
+	//1、验证验证码是否正确
 	if flag := models.VerifyCaptcha(captchaId, verifyValue); flag {
-		//c.String(http.StatusOK, "验证码验证成功！SUCCESS")
-		con.success(c, "验证码验证成功", "/admin")
-		//2.查询数据库中匹配者
-		userinfo := []models.Manager{}
+		//2、查询数据库 判断用户以及密码是否存在
+		userinfoList := []models.Manager{}
 		password = models.MD5(password)
-		models.DB.Where("username = ? and password=?", username, password).Find(&userinfo)
 
-		if len(userinfo) > 0 {
-			//3.执行登录信息，保存在session
+		models.DB.Where("username=? AND password=?", username, password).Find(&userinfoList)
+
+		if len(userinfoList) > 0 {
+			//3、执行登录 保存用户信息 执行跳转
 			session := sessions.Default(c)
-			userinfoSlice, _ := json.Marshal(userinfo)
-			session.Set("userinfo", userinfoSlice)
+			userinfoSlice, _ := json.Marshal(userinfoList)
+			session.Set("userinfo", string(userinfoSlice))
 			session.Save()
-			con.success(c, "用户登录成功", "/admin")
+			con.Success(c, "登录成功", "/admin")
+
 		} else {
-			con.fail(c, "用户名或密码错误,请重试！", "/admin/login")
+			con.Error(c, "用户名或者密码错误", "/admin/login")
 		}
+
 	} else {
-		//c.String(http.StatusOK, "验证码验证失败！FAILED")
-		con.fail(c, "验证码验证失败", "/admin/login")
+		con.Error(c, "验证码验证失败", "/admin/login")
 	}
 
 }
 
-func (con *LoginController) Captcha(c *gin.Context) {
+func (con LoginController) Captcha(c *gin.Context) {
 	id, b64s, err := models.MakeCaptcha()
-	models.ErrHandler(err)
 
+	if err != nil {
+		fmt.Println(err)
+	}
 	c.JSON(http.StatusOK, gin.H{
-		"CaptchaId":    id,
-		"CaptchaImage": b64s,
+		"captchaId":    id,
+		"captchaImage": b64s,
 	})
 }
-
-func (con *LoginController) LogOut(c *gin.Context) {
+func (con LoginController) LoginOut(c *gin.Context) {
 	session := sessions.Default(c)
 	session.Delete("userinfo")
 	session.Save()
-	con.success(c, "退出登录成功", "/admin/login")
+	con.Success(c, "退出登录成功", "/admin/login")
 }

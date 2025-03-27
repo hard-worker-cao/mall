@@ -2,20 +2,22 @@ package models
 
 import (
 	"fmt"
+	"os"
+
 	"gopkg.in/ini.v1"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"os"
 )
 
-// 连接mysql数据库
 var DB *gorm.DB
 var err error
 
-func InitDB() {
-	config, inierr := ini.Load("conf/app.ini")
-	if err != nil {
-		fmt.Printf("failed to load conf file: %v", inierr)
+func init() {
+	//读取.ini里面的数据库配置
+
+	config, iniErr := ini.Load("./conf/app.ini")
+	if iniErr != nil {
+		fmt.Printf("Fail to read file: %v", iniErr)
 		os.Exit(1)
 	}
 
@@ -25,14 +27,15 @@ func InitDB() {
 	password := config.Section("mysql").Key("password").String()
 	database := config.Section("mysql").Key("database").String()
 
-	dsn := fmt.Sprintf("%v:%v@tcp(%v:%v)/%v?charset=utf8mb4&parseTime=True&loc=Local",
-		user, password, ip, port, database)
-
+	dsn := fmt.Sprintf("%v:%v@tcp(%v:%v)/%v?charset=utf8mb4&parseTime=True&loc=Local", user, password, ip, port, database)
 	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{
 		QueryFields: true,
+		//SkipDefaultTransaction: true, //禁用事务
 	})
+	//DB.Debug()
 	if err != nil {
-		fmt.Printf("failed to connect database: %v", err)
+		fmt.Println(err)
 	}
 
+	fmt.Println("连接数据库成功")
 }
