@@ -1,7 +1,6 @@
 package admin
 
 import (
-	"fmt"
 	"mall/models"
 	"net/http"
 
@@ -16,7 +15,7 @@ func (con GoodsCateController) Index(c *gin.Context) {
 	goodsCateList := []models.GoodsCate{}
 	//加载默认的页面
 	models.DB.Where("pid = 0").Preload("GoodsCateItems").Find(&goodsCateList)
-	fmt.Printf("%#v", goodsCateList)
+	//fmt.Printf("%#v", goodsCateList)
 	c.HTML(http.StatusOK, "admin/goodsCate/index.html", gin.H{
 		"goodsCateList": goodsCateList,
 	})
@@ -136,6 +135,7 @@ func (con GoodsCateController) DoEdit(c *gin.Context) {
 	con.Success(c, "修改成功", "/admin/goodsCate")
 
 }
+
 func (con GoodsCateController) Delete(c *gin.Context) {
 	id, err := models.Int(c.Query("id"))
 	if err != nil {
