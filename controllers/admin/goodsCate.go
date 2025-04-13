@@ -2,7 +2,7 @@ package admin
 
 import (
 	"fmt"
-	"ginshop57/models"
+	"mall/models"
 	"net/http"
 
 	"github.com/gin-gonic/gin"

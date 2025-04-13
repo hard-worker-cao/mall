@@ -2,7 +2,7 @@ package admin
 
 import (
 	"fmt"
-	"ginshop57/models"
+	"mall/models"
 	"math"
 	"net/http"
 	"strings"

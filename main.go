@@ -1,9 +1,9 @@
 package main
 
 import (
-	"ginshop57/models"
-	"ginshop57/routers"
 	"html/template"
+	"mall/models"
+	"mall/routers"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
@@ -35,5 +35,5 @@ func main() {
 
 	routers.AdminRoutersInit(r)
 
-	r.Run()
+	r.Run(":8080")
 }

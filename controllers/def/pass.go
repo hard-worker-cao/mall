@@ -2,7 +2,7 @@ package itying
 
 import (
 	"fmt"
-	"ginshop57/models"
+	"mall/models"
 	"net/http"
 	"regexp"
 	"strings"

@@ -3,7 +3,7 @@ package middlewares
 import (
 	"encoding/json"
 	"fmt"
-	"ginshop57/models"
+	"mall/models"
 	"os"
 	"strings"
 

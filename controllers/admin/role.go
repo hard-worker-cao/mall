@@ -1,7 +1,7 @@
 package admin
 
 import (
-	"ginshop57/models"
+	"mall/models"
 	"net/http"
 	"strings"
 

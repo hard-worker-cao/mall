@@ -1,7 +1,7 @@
 package middlewares
 
 import (
-	"ginshop57/models"
+	"mall/models"
 
 	"github.com/gin-gonic/gin"
 )

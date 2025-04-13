@@ -1,7 +1,7 @@
 package itying
 
 import (
-	"ginshop57/models"
+	"mall/models"
 	"net/http"
 
 	"github.com/gin-contrib/sessions"

@@ -2,7 +2,7 @@ package itying
 
 import (
 	"fmt"
-	"ginshop57/models"
+	"mall/models"
 	"time"
 
 	"github.com/gin-gonic/gin"

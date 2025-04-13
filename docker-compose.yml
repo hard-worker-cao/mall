@@ -1,0 +1,104 @@
+
+version: '3.8'
+
+services:
+  # Go应用服务 (多阶段构建)
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production  # 假设Dockerfile有明确构建阶段
+    environment:
+      - DB_HOST=mysql
+      - REDIS_URL=redis://redis:6379
+      - APP_ENV=production
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./app/logs:/var/log/app
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 1G
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3
+
+  # MySQL 8.0
+  mysql:
+    image: mysql:8.0.27
+    platform: linux/x86_64
+    command: [
+      "--default-authentication-plugin=mysql_native_password",
+      "--character-set-server=utf8mb4",
+      "--collation-server=utf8mb4_unicode_ci",
+      "--innodb-buffer-pool-size=1G"  # 2025年推荐最小内存配置
+    ]
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: app_db
+      MYSQL_USER: app_user
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./config/mysql/conf.d:/etc/mysql/conf.d  # 自定义配置
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -uroot -p${DB_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  # Redis 7.4
+  redis:
+    image: redis:7.4.2-alpine
+    command: [
+      "redis-server",
+      "--requirepass ${REDIS_PASSWORD}",
+      "--appendonly yes",
+      "--tls-port 6379",
+      "--port 0",
+      "--tls-cert-file /certs/redis.crt",
+      "--tls-key-file /certs/redis.key"
+    ]
+    volumes:
+      - redis_data:/data
+      - ./certs:/certs:ro
+    healthcheck:
+      test: ["CMD", "redis-cli", "--tls", "-a ${REDIS_PASSWORD}", "ping"]
+
+  # Nginx反向代理 (HTTP/3支持)
+  nginx:
+    image: nginx:1.18.0-alpine
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"  # QUIC协议端口
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./certs:/etc/letsencrypt:ro
+      - ./static:/var/www/static:ro
+    depends_on:
+      - app
+
+volumes:
+  mysql_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: /opt/your_project/mysql_data  # 阿里云建议使用云盘挂载
+      o: bind
+  redis_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: /opt/your_project/redis_data
+
+# 环境变量文件
+env_file:
+  - .env.production

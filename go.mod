@@ -1,4 +1,4 @@
-module ginshop57
+module mall
 
 go 1.17
 
