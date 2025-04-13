@@ -1,7 +1,8 @@
 package admin
 
 import (
-	"mall/models"
+	"fmt"
+	"ginshop57/models"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -13,14 +14,12 @@ type GoodsCateController struct {
 
 func (con GoodsCateController) Index(c *gin.Context) {
 	goodsCateList := []models.GoodsCate{}
-	//加载默认的页面
 	models.DB.Where("pid = 0").Preload("GoodsCateItems").Find(&goodsCateList)
-	//fmt.Printf("%#v", goodsCateList)
+	fmt.Printf("%#v", goodsCateList)
 	c.HTML(http.StatusOK, "admin/goodsCate/index.html", gin.H{
 		"goodsCateList": goodsCateList,
 	})
 }
-
 func (con GoodsCateController) Add(c *gin.Context) {
 	//获取顶级分类
 	goodsCateList := []models.GoodsCate{}
@@ -29,7 +28,6 @@ func (con GoodsCateController) Add(c *gin.Context) {
 		"goodsCateList": goodsCateList,
 	})
 }
-
 func (con GoodsCateController) DoAdd(c *gin.Context) {
 	title := c.PostForm("title")
 	pid, err1 := models.Int(c.PostForm("pid"))
@@ -72,7 +70,8 @@ func (con GoodsCateController) DoAdd(c *gin.Context) {
 }
 
 func (con GoodsCateController) Edit(c *gin.Context) {
-	//查找到要修改的数据
+
+	//获取要修改的数据
 	id, err := models.Int(c.Query("id"))
 	if err != nil {
 		con.Error(c, "传入参数错误", "/admin/goodsCate")
@@ -90,7 +89,6 @@ func (con GoodsCateController) Edit(c *gin.Context) {
 	})
 
 }
-
 func (con GoodsCateController) DoEdit(c *gin.Context) {
 	id, err1 := models.Int(c.PostForm("id"))
 	title := c.PostForm("title")
@@ -135,7 +133,6 @@ func (con GoodsCateController) DoEdit(c *gin.Context) {
 	con.Success(c, "修改成功", "/admin/goodsCate")
 
 }
-
 func (con GoodsCateController) Delete(c *gin.Context) {
 	id, err := models.Int(c.Query("id"))
 	if err != nil {

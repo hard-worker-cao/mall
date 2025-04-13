@@ -1,7 +1,7 @@
 package admin
 
 import (
-	"mall/models"
+	"ginshop57/models"
 	"net/http"
 	"strings"
 
@@ -20,7 +20,6 @@ func (con GoodsTypeController) Index(c *gin.Context) {
 	})
 
 }
-
 func (con GoodsTypeController) Add(c *gin.Context) {
 	c.HTML(http.StatusOK, "admin/goodsType/add.html", gin.H{})
 }
@@ -55,7 +54,6 @@ func (con GoodsTypeController) DoAdd(c *gin.Context) {
 	}
 
 }
-
 func (con GoodsTypeController) Edit(c *gin.Context) {
 
 	id, err := models.Int(c.Query("id"))
@@ -70,7 +68,6 @@ func (con GoodsTypeController) Edit(c *gin.Context) {
 	}
 
 }
-
 func (con GoodsTypeController) DoEdit(c *gin.Context) {
 
 	id, err1 := models.Int(c.PostForm("id"))

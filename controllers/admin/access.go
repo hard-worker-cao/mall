@@ -1,7 +1,8 @@
 package admin
 
 import (
-	"mall/models"
+	"fmt"
+	"ginshop57/models"
 	"net/http"
 	"strings"
 
@@ -16,12 +17,13 @@ func (con AccessController) Index(c *gin.Context) {
 	accessList := []models.Access{}
 	models.DB.Where("module_id=?", 0).Preload("AccessItem").Find(&accessList)
 
-	//fmt.Printf("%#v", accessList)
+	fmt.Printf("%#v", accessList)
 	c.HTML(http.StatusOK, "admin/access/index.html", gin.H{
 		"accessList": accessList,
 	})
 
 }
+
 func (con AccessController) Add(c *gin.Context) {
 	//获取顶级模块
 	accessList := []models.Access{}
@@ -30,6 +32,7 @@ func (con AccessController) Add(c *gin.Context) {
 		"accessList": accessList,
 	})
 }
+
 func (con AccessController) DoAdd(c *gin.Context) {
 	moduleName := strings.Trim(c.PostForm("module_name"), " ")
 	actionName := c.PostForm("action_name")

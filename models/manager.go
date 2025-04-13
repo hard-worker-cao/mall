@@ -10,8 +10,7 @@ type Manager struct {
 	RoleId   int
 	AddTime  int
 	IsSuper  int
-	//关联role表单的Id
-	Role Role `gorm:"foreignkey:RoleId;references:Id"`
+	Role     Role `gorm:"foreignKey:RoleId;references:Id"`
 }
 
 func (Manager) TableName() string {

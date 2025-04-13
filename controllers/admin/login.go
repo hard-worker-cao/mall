@@ -3,7 +3,7 @@ package admin
 import (
 	"encoding/json"
 	"fmt"
-	"mall/models"
+	"ginshop57/models"
 	"net/http"
 
 	"github.com/gin-contrib/sessions"
@@ -15,9 +15,6 @@ type LoginController struct {
 }
 
 func (con LoginController) Index(c *gin.Context) {
-	//验证md5是否正确
-	// fmt.Println(models.Md5("123456"))   e10adc3949ba59abbe56e057f20f883e
-
 	c.HTML(http.StatusOK, "admin/login/login.html", gin.H{})
 
 }
@@ -27,18 +24,19 @@ func (con LoginController) DoLogin(c *gin.Context) {
 	username := c.PostForm("username")
 	password := c.PostForm("password")
 	verifyValue := c.PostForm("verifyValue")
-	//fmt.Println(username, password)
+	fmt.Println(username, password)
 	//1、验证验证码是否正确
 	if flag := models.VerifyCaptcha(captchaId, verifyValue); flag {
 		//2、查询数据库 判断用户以及密码是否存在
 		userinfoList := []models.Manager{}
-		password = models.MD5(password)
+		password = models.Md5(password)
 
 		models.DB.Where("username=? AND password=?", username, password).Find(&userinfoList)
 
 		if len(userinfoList) > 0 {
 			//3、执行登录 保存用户信息 执行跳转
 			session := sessions.Default(c)
+			//注意：session.Set没法直接保存结构体对应的切片 把结构体转换成json字符串
 			userinfoSlice, _ := json.Marshal(userinfoList)
 			session.Set("userinfo", string(userinfoSlice))
 			session.Save()
@@ -54,8 +52,16 @@ func (con LoginController) DoLogin(c *gin.Context) {
 
 }
 
+func (con LoginController) LoginOut(c *gin.Context) {
+	session := sessions.Default(c)
+	session.Delete("userinfo")
+	session.Save()
+	con.Success(c, "退出登录成功", "/admin/login")
+}
+
+// 验证码
 func (con LoginController) Captcha(c *gin.Context) {
-	id, b64s, err := models.MakeCaptcha()
+	id, b64s, err := models.MakeCaptcha(34, 100, 2)
 
 	if err != nil {
 		fmt.Println(err)
@@ -64,10 +70,4 @@ func (con LoginController) Captcha(c *gin.Context) {
 		"captchaId":    id,
 		"captchaImage": b64s,
 	})
-}
-func (con LoginController) LoginOut(c *gin.Context) {
-	session := sessions.Default(c)
-	session.Delete("userinfo")
-	session.Save()
-	con.Success(c, "退出登录成功", "/admin/login")
 }

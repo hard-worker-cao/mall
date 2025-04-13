@@ -2,10 +2,12 @@ package models
 
 type User struct {
 	Id       int
-	Username string
-	Age      int
-	Email    string
+	Phone    string
+	Password string
 	AddTime  int
+	LastIp   string
+	Email    string
+	Status   int
 }
 
 func (User) TableName() string {

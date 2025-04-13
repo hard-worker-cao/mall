@@ -1,7 +1,7 @@
 package admin
 
 import (
-	"mall/models"
+	"ginshop57/models"
 	"net/http"
 	"strings"
 
@@ -15,7 +15,7 @@ type RoleController struct {
 func (con RoleController) Index(c *gin.Context) {
 	roleList := []models.Role{}
 	models.DB.Find(&roleList)
-	//fmt.Println(roleList)
+	// fmt.Println(roleList)
 	c.HTML(http.StatusOK, "admin/role/index.html", gin.H{
 		"roleList": roleList,
 	})
@@ -162,9 +162,7 @@ func (con RoleController) DoAuth(c *gin.Context) {
 		roleAccess.AccessId = accessId
 		models.DB.Create(&roleAccess)
 	}
-	//fmt.Println(roleId)
-	//fmt.Println(accessId)
-	//fmt.Println("/admin/role/auth?id=?" + models.String(roleId))
+
 	// c.String(200, "DoAuth")
 	// admin/role/auth?id=9
 	con.Success(c, "授权成功", "/admin/role/auth?id="+models.String(roleId))

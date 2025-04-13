@@ -13,35 +13,34 @@
                     <form action="/admin/goodsTypeAttribute/doEdit" method="post">
                         <input type="hidden" name="id" value="{{.goodsTypeAttribute.Id}}" />
                         <ul>
-                            <li>
-                                属性名称：<input type="text" name="title" value="{{.goodsTypeAttribute.Title}}" />
-                            </li>
+                            <li> 　属性名称： <input type="text" name="title" value="{{.goodsTypeAttribute.Title}}" /></li>
 
-                            <li> 所属类型：
+                            <li> 　所属类型：
                                 {{$cateId := .goodsTypeAttribute.CateId}}
                                 <select name="cate_id" id="cate_id">
                                     {{range $key,$value := .goodsTypeList}}
-                                    <option {{if eq $cateId $value.Id}} selected {{end}}  value="{{$value.Id}}">{{$value.Title}}</option>
+                                        <option {{if eq $cateId $value.Id}} selected {{end}}  value="{{$value.Id}}">{{$value.Title}}</option>  
                                     {{end}}
                                 </select>
                             </li>
 
 
-                            <li> 录入方式：
+                            <li> 　录入方式：
                                 <input type="radio" name="attr_type" value="1" {{if eq .goodsTypeAttribute.AttrType 1}} checked="true" {{end}} id="text" /><label
-                                        for="text">单行文本框</label> 　
+                                    for="text">单行文本框</label> 　
                                 <input type="radio" name="attr_type" value="2" {{if eq .goodsTypeAttribute.AttrType 2}} checked="true" {{end}}  id="textarea" /><label
-                                        for="textarea">多行文本框</label> 　
+                                    for="textarea">多行文本框</label> 　
                                 <input type="radio" name="attr_type" value="3" {{if eq .goodsTypeAttribute.AttrType 3}} checked="true" {{end}}  id="select" /><label
-                                        for="select">从下面的列表中选择（一行代表一个可选值）</label>　
+                                    for="select">从下面的列表中选择（一行代表一个可选值）</label>　
                             </li>
+
 
                             <li>
                                 可选值列表：
                                 <textarea name="attr_value" id="attr_value" cols="60" rows="8" {{if ne .goodsTypeAttribute.AttrType 3}} disabled="disabled" {{end}}>{{.goodsTypeAttribute.AttrValue}}</textarea>
                             </li>
 
-                            <li> <span>排　序:</span> <input type="text" name="sort" value="{{.goodsTypeAttribute.Sort}}" /></li>
+                            <li> <span>排　　序:</span> <input type="text" name="sort" value="{{.goodsTypeAttribute.Sort}}" /></li>
 
                             <li>
                                 <br />
@@ -60,7 +59,7 @@
 </div>
 <script>
 
-    $(function(){
+$(function(){    
         $("input[name='attr_type").change(function(){
             // alert($(this).val())
             if($(this).val()==3){
@@ -69,7 +68,7 @@
                 $("#attr_value").attr("disabled",true)
             }
         })
-    })
+})
 </script>
 </body>
 

@@ -1,7 +1,8 @@
 package admin
 
 import (
-	"mall/models"
+	"fmt"
+	"ginshop57/models"
 	"net/http"
 	"strings"
 
@@ -17,7 +18,7 @@ func (con ManagerController) Index(c *gin.Context) {
 	managerList := []models.Manager{}
 	models.DB.Preload("Role").Find(&managerList)
 
-	//fmt.Printf("%#v", managerList)
+	fmt.Printf("%#v", managerList)
 
 	c.HTML(http.StatusOK, "admin/manager/index.html", gin.H{
 		"managerList": managerList,
@@ -59,7 +60,7 @@ func (con ManagerController) DoAdd(c *gin.Context) {
 	//执行增加管理员
 	manager := models.Manager{
 		Username: username,
-		Password: models.MD5(password),
+		Password: models.Md5(password),
 		Email:    email,
 		Mobile:   mobile,
 		RoleId:   roleId,
@@ -133,7 +134,7 @@ func (con ManagerController) DoEdit(c *gin.Context) {
 			con.Error(c, "密码的长度不合法 密码长度不能小于6位", "/admin/manager/edit?id="+models.String(id))
 			return
 		}
-		manager.Password = models.MD5(password)
+		manager.Password = models.Md5(password)
 	}
 	err3 := models.DB.Save(&manager).Error
 	if err3 != nil {

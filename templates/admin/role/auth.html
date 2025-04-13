@@ -11,7 +11,7 @@
 
             {{range $key,$value := .accessList}}
             <tr>
-                <td align="right" style="background: #D8E2FA; padding-right: 10px; width: 150px;">
+                <td text-align="right" style="background: #D8E2FA; padding-right: 10px; width: 150px;">
                     <label>
                         <input type="checkbox"  {{if eq $value.Checked true }}checked{{end}} class="module_cbo" value="{{$value.Id}}"
                             name="access_node[]">&nbsp;&nbsp;
@@ -34,7 +34,6 @@
     </form>
 
 </div>
-
 
 </body>
 

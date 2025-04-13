@@ -35,11 +35,8 @@
 
                     </td>
                     <td>{{$value.ActionName}}</td>        
-                    <td>{{$value.Url}}</td>
-                    <td class="text-center">
-                        <span class="chSpanNum" data-id="{{$value.Id}}" data-table="access" data-field="sort">{{$value.Sort}}</span>
-                    </td>
-
+                    <td>{{$value.Url}}</td>    
+                    <td> <span class="chSpanNum" data-id="{{$value.Id}}" data-table="access" data-field="sort">{{$value.Sort}}</span></td>    
                     <td>{{$value.Description}}</td>    
                     <td class="text-center">
                         <a href="/admin/access/edit?id={{$value.Id}}">修改</a> 
@@ -62,10 +59,8 @@
                             {{end}}
                         </td>
                         <td>{{$v.ActionName}}</td>        
-                        <td>{{$v.Url}}</td>
-                        <td class="text-center">
-                            <span class="chSpanNum" data-id="{{$v.Id}}" data-table="access" data-field="sort">{{$v.Sort}}</span>
-                        </td>
+                        <td>{{$v.Url}}</td>    
+                        <td><span class="chSpanNum" data-id="{{$v.Id}}" data-table="access" data-field="sort">{{$v.Sort}}</span></td>    
                         <td>{{$v.Description}}</td>    
                         <td class="text-center">
                             <a href="/admin/access/edit?id={{$v.Id}}">修改</a> 

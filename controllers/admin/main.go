@@ -2,20 +2,23 @@ package admin
 
 import (
 	"encoding/json"
+	_ "fmt"
+	"ginshop57/models"
+	"net/http"
+
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
-	"mall/models"
-	"net/http"
 )
 
-type MainController struct{}
+type MainController struct {
+	BaseController
+}
 
 func (con MainController) Index(c *gin.Context) {
 	//获取userinfo 对应的session
 	session := sessions.Default(c)
 	userinfo := session.Get("userinfo")
-	//类型断言 来判断 userinfo是不是一个string
 	userinfoStr, ok := userinfo.(string)
 
 	if ok {
@@ -29,15 +32,15 @@ func (con MainController) Index(c *gin.Context) {
 			return db.Order("access.sort DESC")
 		}).Order("sort DESC").Find(&accessList)
 
-		//3、获取当前角色拥有的权限 ，并把权限id放在一个map对象里面
+		//3、获取当前角色拥有的权限，并把权限id放在一个map对象里面
 		roleAccess := []models.RoleAccess{}
 		models.DB.Where("role_id=?", userinfoStruct[0].RoleId).Find(&roleAccess)
 		roleAccessMap := make(map[int]int)
 		for _, v := range roleAccess {
 			roleAccessMap[v.AccessId] = v.AccessId
 		}
-		//4、循环遍历所有的权限数据，判断当前权限的id是否在角色权限的Map对象中,如果是的话给当前数据加入checked属性
 
+		//4、循环遍历所有的权限数据，判断当前权限的id是否在角色权限的Map对象中,如果是的话给当前数据加入checked属性
 		for i := 0; i < len(accessList); i++ {
 			if _, ok := roleAccessMap[accessList[i].Id]; ok {
 				accessList[i].Checked = true
@@ -49,7 +52,7 @@ func (con MainController) Index(c *gin.Context) {
 			}
 		}
 
-		//fmt.Printf("%#v", accessList)
+		//测试fmt.Printf("%#v", accessList)
 		c.HTML(http.StatusOK, "admin/main/index.html", gin.H{
 			"username":   userinfoStruct[0].Username,
 			"accessList": accessList,
@@ -78,7 +81,6 @@ func (con MainController) ChangeStatus(c *gin.Context) {
 
 	table := c.Query("table")
 	field := c.Query("field")
-
 	// status = ABS(0-1)   1
 	// status = ABS(1-1)  0
 	err1 := models.DB.Exec("update "+table+" set "+field+"=ABS("+field+"-1) where id=?", id).Error
@@ -96,7 +98,7 @@ func (con MainController) ChangeStatus(c *gin.Context) {
 	})
 }
 
-// 公共修改方法
+// 公共修改状态的方法
 func (con MainController) ChangeNum(c *gin.Context) {
 	id, err := models.Int(c.Query("id"))
 	if err != nil {
@@ -123,5 +125,10 @@ func (con MainController) ChangeNum(c *gin.Context) {
 			"message": "修改成功",
 		})
 	}
+}
 
+// 清除缓存
+func (con MainController) FlushAll(c *gin.Context) {
+	models.CacheDb.FlushAll()
+	con.Success(c, "清除Redis缓存数据成功", "/admin")
 }

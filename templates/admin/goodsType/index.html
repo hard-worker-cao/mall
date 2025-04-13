@@ -4,8 +4,8 @@
 <div class="container-fluid">
     <div class="row">
         <div class="panel panel-default">
-            <div class="panel-heading">
-                <a href="/admin/goodsType/add" class="btn btn-primary">增加商品类型</a>
+            <div class="panel-heading clear">
+                <a href="/admin/goodsType/add" class="btn btn-primary fr">增加商品类型</a>
             </div>
             <!--
                 列表展示
@@ -37,8 +37,8 @@
                             </td>
 
 
-                            <td class="text-center">
-                                <a href="/admin/goodsTypeAttribute?id={{$value.Id}}">类型属性</a>
+                            <td class="text-center">     
+                                <a href="/admin/goodsTypeAttribute?id={{$value.Id}}">商品类型属性</a> 　                          
                                 <a href="/admin/goodsType/edit?id={{$value.Id}}">修改</a> 　
                                 <a class="delete"
                                     href="/admin/goodsType/delete?id={{$value.Id}}">删除</a>

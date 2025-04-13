@@ -21,7 +21,7 @@
                                 <textarea name="description" id="" cols="60" rows="8">{{.goodsType.Description}}</textarea>
                             </li>
 
-                            <li>  状　态:
+                            <li>  状　　态: 
                                 <input type="radio" name="status"  {{if eq .goodsType.Status 1}}checked{{end}} value="1" id="a"/> <label for="a">显示</label>    
                                 
                                 <input type="radio" name="status" {{if eq .goodsType.Status 0}}checked{{end}}  value="0" id="b"/><label for="b">隐藏</label> 　</li>

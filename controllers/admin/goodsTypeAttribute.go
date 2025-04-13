@@ -1,11 +1,11 @@
 package admin
 
 import (
-	"fmt"
-	"github.com/gin-gonic/gin"
-	"mall/models"
+	"ginshop57/models"
 	"net/http"
 	"strings"
+
+	"github.com/gin-gonic/gin"
 )
 
 type GoodsTypeAttributeController struct {
@@ -13,15 +13,14 @@ type GoodsTypeAttributeController struct {
 }
 
 func (con GoodsTypeAttributeController) Index(c *gin.Context) {
-	cateId, err := models.Int(strings.Trim(c.Query("id"), " "))
-	fmt.Println(cateId)
+
+	cateId, err := models.Int(c.Query("id"))
 	if err != nil {
-		fmt.Println(err)
 		con.Error(c, "传入的参数不正确", "/admin/goodsType")
 		return
 	}
 	//获取商品类型属性
-	var goodsTypeAttributeList []models.GoodsTypeAttribute
+	goodsTypeAttributeList := []models.GoodsTypeAttribute{}
 	models.DB.Where("cate_id=?", cateId).Find(&goodsTypeAttributeList)
 	//获取商品类型属性对应的类型
 
@@ -33,10 +32,11 @@ func (con GoodsTypeAttributeController) Index(c *gin.Context) {
 		"goodsTypeAttributeList": goodsTypeAttributeList,
 		"goodsType":              goodsType,
 	})
-}
 
+}
 func (con GoodsTypeAttributeController) Add(c *gin.Context) {
 	//获取当前商品类型属性对应的类型id
+
 	cateId, err := models.Int(c.Query("cate_id"))
 	if err != nil {
 		con.Error(c, "传入的参数不正确", "/admin/goodsType")
@@ -85,7 +85,7 @@ func (con GoodsTypeAttributeController) DoAdd(c *gin.Context) {
 	}
 	err := models.DB.Create(&goodsTypeAttr).Error
 	if err != nil {
-		con.Error(c, "增加商品类型属性失败，请重试", "/admin/goodsTypeAttribute/add?cate_id="+models.String(cateId))
+		con.Error(c, "增加商品类型属性失败 请重试", "/admin/goodsTypeAttribute/add?cate_id="+models.String(cateId))
 	} else {
 		con.Success(c, "增加商品类型属性成功", "/admin/goodsTypeAttribute?id="+models.String(cateId))
 	}
@@ -93,18 +93,21 @@ func (con GoodsTypeAttributeController) DoAdd(c *gin.Context) {
 }
 
 func (con GoodsTypeAttributeController) Edit(c *gin.Context) {
+
 	//获取当前要修改数据的id
 	id, err := models.Int(c.Query("id"))
 	if err != nil {
 		con.Error(c, "传入的参数不正确", "/admin/goodsType")
 		return
 	}
-	//根据当前id对应商品类型属性
+	//获取当前id对应的商品类型属性
 	goodsTypeAttribute := models.GoodsTypeAttribute{Id: id}
 	models.DB.Find(&goodsTypeAttribute)
+
 	//获取所有的商品类型
 	goodsTypeList := []models.GoodsType{}
 	models.DB.Find(&goodsTypeList)
+
 	c.HTML(http.StatusOK, "admin/goodsTypeAttribute/edit.html", gin.H{
 		"goodsTypeAttribute": goodsTypeAttribute,
 		"goodsTypeList":      goodsTypeList,
@@ -128,7 +131,7 @@ func (con GoodsTypeAttributeController) DoEdit(c *gin.Context) {
 		return
 	}
 	if err4 != nil {
-		con.Error(c, "排序值有误", "/admin/goodsTypeAttribute/edit?id="+models.String(id))
+		con.Error(c, "排序值不对", "/admin/goodsTypeAttribute/edit?id="+models.String(id))
 		return
 	}
 
@@ -148,12 +151,10 @@ func (con GoodsTypeAttributeController) DoEdit(c *gin.Context) {
 }
 
 func (con GoodsTypeAttributeController) Delete(c *gin.Context) {
-	id, err1 := models.Int(strings.Trim(c.Query("id"), " "))
-	cateId, err2 := models.Int(strings.Trim(c.Query("cate_id"), " "))
+	id, err1 := models.Int(c.Query("id"))
+	cateId, err2 := models.Int(c.Query("cate_id"))
 	if err1 != nil || err2 != nil {
-		fmt.Println(err1)
-		fmt.Println(err2)
-		con.Error(c, "传入参数有误", "/admin/goodsType")
+		con.Error(c, "传入参数错误", "/admin/goodsType")
 	} else {
 		goodsTypeAttr := models.GoodsTypeAttribute{Id: id}
 		models.DB.Delete(&goodsTypeAttr)

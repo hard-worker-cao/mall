@@ -1,6 +1,7 @@
 {{ define "admin/goodsCate/add.html" }}
 {{ template "admin/public/page_header.html" .}}
 
+
 <div class="container-fluid">
     <div class="row">
 
@@ -12,11 +13,13 @@
                 <div class="table-responsive input-form">
                     <form action="/admin/goodsCate/doAdd" method="post" enctype="multipart/form-data">
                         <ul>
+
                             <li> <span>分类名称:</span> <input type="text" name="title" class="input" /></li>
 
                             <li> <span>上级分类:</span>
                                 <select name="pid" id="pid">
                                     <option value="0">顶级分类</option>
+                                  
                                     {{range $key,$value := .goodsCateList}}                                   
                                     <option value="{{$value.Id}}">{{$value.Title}}</option>
                                     {{end}}
@@ -40,7 +43,10 @@
                             <li>  <span>状　　态:</span> 
                                 <input type="radio" name="status" checked value="1" id="a"/> <label for="a">显示</label>   
                                 <input type="radio" name="status" value="0" id="b"/><label for="b">隐藏</label> 　
+                            
                             </li>
+                            
+        
 
                             <li>
                                 <br/>
@@ -48,9 +54,12 @@
                             </li>
 
                         </ul>
+
+
                     </form>
                 </div>
             </div>
+
 
         </div>
 

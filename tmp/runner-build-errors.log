@@ -1,4 +1,0 @@
-# mall/controllers/admin
-controllers\admin\goodsTypeAttribute.go:25:31: undefined: cateId
-controllers\admin\goodsTypeAttribute.go:29:26: undefined: cateId
-controllers\admin\goodsTypeAttribute.go:32:29: undefined: cateId
